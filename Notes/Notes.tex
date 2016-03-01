@@ -1,0 +1,395 @@
+\documentclass[titlepage, fleqn, a4paper, 12pt, twoside]{article}
+\usepackage{etex}
+\usepackage{geometry}
+\usepackage{exsheets} %question and solution environments
+\usepackage{amsmath, amssymb, amsthm} %standard AMS packages
+\usepackage{esint} %integral signs
+\usepackage{marginnote} %marginnotes
+\usepackage{gensymb} %miscellaneous symbols
+\usepackage{commath} %differential symbols
+\usepackage{xcolor} %colours
+\usepackage{cancel} %cancelling terms
+\usepackage[free-standing-units]{siunitx} %formatting units
+\usepackage{tikz, pgfplots} %diagrams
+	\usetikzlibrary{calc, hobby, patterns, intersections, angles, quotes, spy}
+\usepackage{graphicx} %inserting graphics
+\usepackage{epstopdf} %converting and inserting eps graphics
+\usepackage{hyperref} %hyperlinks
+\usepackage{datetime} %date and time
+\usepackage{enumerate, enumitem} %numbered lists
+\usepackage{float} %inserting floats
+\usepackage{microtype} %micro-typography
+\usepackage{listings} %formatting code
+	\lstset{language=Matlab}
+	\lstdefinestyle{standardMatlab}
+	{
+		belowcaptionskip=1\baselineskip,
+		breaklines=true,
+		frame=L,
+		xleftmargin=\parindent,
+		language=C,
+		showstringspaces=false,
+		basicstyle=\footnotesize\ttfamily,
+		keywordstyle=\bfseries\color{green!40!black},
+		commentstyle=\itshape\color{purple!40!black},
+		identifierstyle=\color{blue},
+		stringstyle=\color{orange},
+	}
+\usepackage{algpseudocode} %algorithms
+\usepackage{algorithm} %algorithms
+\usepackage{todonotes}
+\usepackage{booktabs}
+\usepackage{bytefield}
+\usepackage{xspace}
+\usepackage{cleveref}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}} %adds numbers to specific equations in non-numbered list of equations
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{law}{Law}
+
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\let\And\relax
+\algnewcommand\And{\ \textbf{and}\ }
+\algnewcommand\False{\texttt{FALSE}}
+\algnewcommand\True{\texttt{TRUE}}
+
+\makeatletter
+\@addtoreset{section}{part} %resets section numbers in new part
+\makeatother
+
+\newcommand\blfootnote[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{#1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+\renewcommand{\marginfont}{\scriptsize \color{blue}}
+
+\renewcommand{\tilde}{\widetilde}
+
+\SetupExSheets{solution/print = true} %prints all solutions by default
+
+\renewcommand{\abstractname}{}    % clear the title
+
+%opening
+\title{Data Structures and Algorithms}
+\author{Aakash Jog}
+\date{2015-16}
+
+\begin{document}
+
+\pagenumbering{roman}
+\begin{titlepage}
+\newgeometry{margin=0cm}
+\maketitle
+\end{titlepage}
+\restoregeometry
+%\setlength{\mathindent}{0pt}
+
+\blfootnote
+{	
+	\begin{figure}[H]
+		\includegraphics[height = 12pt]{cc.pdf}
+		\includegraphics[height = 12pt]{by.pdf}
+		\includegraphics[height = 12pt]{nc.pdf}
+		\includegraphics[height = 12pt]{sa.pdf}
+	\end{figure}
+	\noindent
+	This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. To view a copy of this license, visit \url{http://creativecommons.org/licenses/by-nc-sa/4.0/}.
+} %CC-BY-NC-SA license
+
+\tableofcontents
+
+\clearpage
+\section{Lecturer Information}
+
+\textbf{Liron David}\\
+~\\
+Office: Tochna 313\\
+E-mail: \href{mailto:lirondavid@gmail.com}{lirondavid@gmail.com}\\
+
+\section{Required Reading}
+
+\begin{enumerate}
+	\item Introduction to Algorithms. Corman, Leiserson and Rivest (CLR)
+\end{enumerate}
+
+\section{Additional Reading}
+
+\begin{enumerate}
+	\item Data Structures and Algorithms. Aho, Hopcroft and Ullman (AHU)
+\end{enumerate}
+
+\clearpage
+\pagenumbering{arabic}
+
+\part{Introduction}
+
+\section{Asymptotic Notation}
+
+\begin{definition}[$\mathrm{O}$ notation]
+	Let $f,g : \mathbb{N} \to \mathbb{R}^+$ be two functions.
+	Then, $f(n)$ is said to be $\mathrm{O}$ of $g(n)$, if there exists a constant $c \in \mathbb{R}^+$, and there exists $n_0 \in \mathbb{N}$, such that for all $n \ge n_0$,
+	\begin{align*}
+		f(n) & \le c g(n)
+	\end{align*}
+	It is denoted as
+	\begin{align*}
+		f(n) & = \mathrm{O}\left( g(n) \right)
+	\end{align*}
+	This notation gives an asymptotic upper bound of $f(n)$.
+\end{definition}
+
+\begin{definition}[$\mathrm{\Omega}$ notation]
+	Let $f,g : \mathbb{N} \to \mathbb{R}^+$ be two functions.
+	Then, $f(n)$ is said to be $\mathrm{\Omega}$ of $g(n)$, if there exists a constant $c \in \mathbb{R}^+$, and there exists $n_0 \in \mathbb{N}$, such that for all $n \ge n_0$,
+	\begin{align*}
+		f(n) & \ge c g(n)
+	\end{align*}
+	It is denoted as
+	\begin{align*}
+		f(n) & = \mathrm{\Omega}\left( g(n) \right)
+	\end{align*}
+	This notation gives an asymptotic lower bound of $f(n)$.
+\end{definition}
+
+\begin{definition}[$\mathrm{\Theta}$ notation]
+	Let $f,g : \mathbb{N} \to \mathbb{R}^+$ be two functions.
+	Then, $f(n)$ is said to be $\mathrm{\Theta}$ of $g(n)$, if there exist constants $c_1,c_2 \in \mathbb{R}^+$, and there exists $n_0 \in \mathbb{N}$, such that for all $n \ge n_0$,
+	\begin{equation*}
+		c_1 g(n) \le f(n) \le c_2 g(n)
+	\end{equation*}
+	It is denoted as
+	\begin{align*}
+		f(n) & = \mathrm{\Theta}\left( g(n) \right)
+	\end{align*}
+	This notation gives both upper and lower bounds of $f(n)$.
+\end{definition}
+
+\section{Linear Search}
+
+\begin{definition}[Array]
+	A fixed number of elements of the same type, stored sequentially in memory, is called an array.
+	The first element is assigned an index of 1.
+	\begin{figure}[H]
+		\begin{bytefield}[bitwidth = 3em, lsb=1]{9}
+			\bitheader{1-9}\\
+			\bitboxes{1}{{-23} {97} {18} {21} {5} {-86} {64} {0} {-37}}
+		\end{bytefield}
+	\end{figure}
+\end{definition}
+
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Require{Integer $n$, array $A$ of $n$ integers, integer $x$}
+		\Ensure{Index of $x$}
+		\Statex
+		\State{$\texttt{found} \gets \False$}
+		\State{$i \gets 1$}
+		\While{$\texttt{found} = \False \And i \le n$}
+			\If{$A[i] = x$}
+				\State{$\texttt{found} \gets \True$}
+			\Else
+				\State{$i \gets i + 1$}
+			\EndIf
+		\EndWhile
+		\If{$\texttt{found} = \True$}
+			\State{\Return{$i$}}
+		\Else
+			\State{\Return{\texttt{NOT-FOUND}}}
+		\EndIf
+	\end{algorithmic}
+	\caption{Linear Search}
+	\label{alg:Linear_Search}
+\end{algorithm}
+
+\subsection{Correctness}
+
+If $x$ exists in $A$, then there exists an index $i$, such that
+\begin{align*}
+	A[i] & = x
+\end{align*}
+In this case, the algorithm returns the index $i$.\\
+If $x$ does not exist in $A$, then the algorithm returns \texttt{NOT-FOUND}.\\
+Therefore, the algorithm works as required.
+
+\subsection{Running Time}
+
+Let $c_1$ be the number of operations executed before and after the while loop.
+Therefore, $c_1$ is constant and independent of $n$.\\
+Let $c_2$ be the number of operations executed in each iteration of the while loop.
+Therefore, $c_2$ is constant.\\
+Let $r$ be the number of iterations of the while loop.\\
+Therefore, the total number of operations is
+\begin{align*}
+	T & = c_1 + c_2 r
+\end{align*}
+Therefore, as $r \le n$,
+\begin{align*}
+	T & \le c_1 + c_2 n
+\end{align*}
+Therefore, the running time is bounded from above by a linear function of $n$.
+Therefore,
+\begin{align*}
+	T & = \mathrm{O}(n)
+\end{align*}
+
+\section{Binary Search}
+
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Require{Integer $n$, sorted array $A$ of $n$ integers, integer $x$}
+		\Ensure{Index of $x$}
+		\Statex
+		\Function{Binary Search}{$n$, $A$, $x$}
+		\State{$\texttt{min} \gets 1$}
+		\State{$\texttt{max} \gets n$}
+		\State{$\texttt{found} \gets \False$}
+		\While{$\texttt{found} = \False \And \texttt{min} \le \texttt{max} $}
+		\State{$\texttt{mid} \gets \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+			\If{$A[\texttt{mid}] = x$}
+				\State{$\texttt{found} \gets \True$}
+			\ElsIf{$x < A[\texttt{mid}]$}
+				\State{$\texttt{max} \gets \texttt{mid} - 1$}
+			\Else
+				\State{$\texttt{min} \gets \texttt{mid} + 1$}
+			\EndIf
+		\EndWhile
+		\If{$\texttt{found} = \True$}
+			\State{\Return{\texttt{mid}}}
+		\Else
+			\State{\Return{\texttt{NOT-FOUND}}}
+		\EndIf
+		\EndFunction
+	\end{algorithmic}
+	\caption{Binary Search}
+	\label{alg:Binary_Search}
+\end{algorithm}
+
+\subsection{Correctness}
+
+Is $x$ exists in $A$, then by the Law of Trichotomy, $x$ is either less than, equal to, or greater than $A[\texttt{mid}]$.\\
+If $x < A[\texttt{mid}]$, then $x$ must appear in the left half of the array which is currently being handled, i.e. $x$ must be in $A[\texttt{min},\dots,\texttt{mid} - 1]$.
+This case is handled by setting the new array to be the left half, i.e. setting \texttt{max} to be $\texttt{mid} - 1$, and repeating the same procedure.\\
+If $x = A[\texttt{mid}]$, then the first if condition is fulfilled, and the index is returned.
+If $x > A[\texttt{mid}]$, then $x$ must appear in the right half of the array which is currently being handled, i.e. $x$ must be in $A[\texttt{mid} + 1,\dots,\texttt{min}]$.
+This case is handled by setting the new array to be the right half, i.e. setting \texttt{min} to be $\texttt{mid} + 1$, and repeating the same procedure.\\
+~\\
+If $x$ does not exist in $A$, then the value of \texttt{found} is never changed, and remains \False.
+The loop is terminated when $\texttt{min} > \texttt{max}$, and \texttt{NOT-FOUND} is returned.\\
+Therefore, the algorithm works as required.
+
+\subsection{Running Time}
+
+Let $c_1$ be the number of operations executed before and after the while loop.
+Therefore, $c_1$ is constant and independent of $n$.\\
+Let $c_2$ be the number of operations executed in each iteration of the while loop.
+Therefore, $c_2$ is constant.\\
+Let $r$ be the number of iterations of the while loop.\\
+Therefore, the total number of operations is
+\begin{align*}
+	c & = c_1 + c_2 r
+\end{align*}
+For each iteration of the while loop, the length of the array being used is halved.
+Therefore, the maximum number of iterations is such that
+\begin{align*}
+	2^x          & \le n \\
+	\therefore x & \le \log_2 n
+\end{align*}
+Therefore, the maximum number of iterations is $\lfloor\log_2 n\rfloor$.
+\begin{align*}
+	c & \le c_1 + c_2 \log_2 n
+\end{align*}
+Therefore, the running time is bounded from above by a logarithmic function of $n$.
+Therefore,
+\begin{align*}
+	c & = \mathrm{O}(\log_2 n)
+\end{align*}
+
+\begin{question}
+	Let $A$ be an array of size $n$, which consists of $0$s and $1$s only, and all $0$s appear before the $1$s.\\
+	Write a pseudocode which receives such an array, and outputs the index of the switch from $0$ to $1$, i.e. it outputs the index $i$ such that $\forall j \le i$,
+	\begin{align*}
+		A[j] & = 0
+	\end{align*}
+	and $\forall j > i$,
+	\begin{align*}
+		A[j] & = 1
+	\end{align*}
+	Hint: Think of an algorithm that executes $c_1 + c_2 \log n$ operations.
+\end{question}
+
+\begin{solution}
+	\begin{algorithm}
+		\begin{algorithmic}[1]
+			\Require{Array $A$ of size $n$}
+			\Ensure{Position of switch from $0$s to $1$s}
+			\Statex
+			\Function{Find Switch}{$A$, $n$}
+				\If{$A[1] = 1$}
+					\State{\Return{$0$}}
+				\EndIf
+				\If{$A[n] = 0$}
+					\State{\Return{$n$}}
+				\EndIf
+				\State{$\texttt{min} \gets 1$}
+				\State{$\texttt{max} \gets n$}
+				\While{$\texttt{min} < \texttt{max} - 1$}
+					\State{$\texttt{mid} \gets \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+					\If{$A[\texttt{mid}] = 1$}
+						\State{$\texttt{max} \gets \texttt{mid}$}
+					\Else
+						\State{$\texttt{min} \gets \texttt{mid}$}
+					\EndIf
+				\EndWhile
+				\State{\Return{\texttt{min}}}
+			\EndFunction
+		\end{algorithmic}
+		\caption{Finding switch from $0$s to $1$s in an sorted array of $0$s and $1$s only}
+	\end{algorithm}
+\end{solution}
+
+\begin{question}
+	Let $A$ be an array of size $n$, which consists of $0$s, and a single $1$.\\
+	Assume that direct access to the array is not possible, i.e. using $A[i]$ to access the $i$th element of the array is not possible.
+	Let \textsc{Sum}($A$, $i$, $j$) be a function which returns $\sum\limits_{k = i}^{j} A[k]$.\\
+	Write a pseudocode that uses \textsc{Sum} and returns the index $i$ for which $A[i] = 1$.
+	The function \textsc{Sum} should be called at most $\lceil \log n \rceil$ times.\\
+	Hint: Think of \nameref{alg:Binary_Search}.
+\end{question}
+
+\begin{solution}
+	\begin{algorithm}
+		\begin{algorithmic}[1]
+			\Require{Array $A$ of size $n$}
+			\Ensure{Index of sole $1$ in $A$}
+			\Statex
+			\Function{Find One}{$A$, $n$}
+				\State{$\texttt{min} \gets 1$}
+				\State{$\texttt{max} \gets n$}
+				\While{$\texttt{min} < \texttt{max}$}
+					\State{$\texttt{mid} = \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+					\If{$\Call{Sum}{A, \texttt{min}, \texttt{mid}} \neq 0$}
+						\State{$\texttt{max} = \texttt{min}$}
+					\Else
+						\State{$\texttt{min} = \texttt{mid} + 1$}
+					\EndIf
+				\EndWhile
+				\State{\Return{$\texttt{min} = \texttt{mid} + 1$}}
+			\EndFunction
+		\end{algorithmic}
+		\caption{Finding switch from $0$s to $1$s in an sorted array of $0$s and $1$s only}
+	\end{algorithm}
+\end{solution}
+
+\end{document}
