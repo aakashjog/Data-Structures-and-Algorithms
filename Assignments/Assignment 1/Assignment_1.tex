@@ -1,0 +1,248 @@
+\documentclass[fleqn, a4paper, 11pt, oneside]{amsart}
+\usepackage{exsheets}
+\usepackage{amsmath, amssymb, amsthm} %standard AMS packages
+\usepackage{marginnote} %marginnotes
+\usepackage{gensymb} %miscellaneous symbols
+\usepackage{commath} %differential symbols
+\usepackage{xcolor} %colours
+\usepackage{cancel} %cancelling terms
+\usepackage[free-standing-units, space-before-unit]{siunitx} %formatting units
+\usepackage{tikz, pgfplots} %diagrams
+	\usetikzlibrary{calc, hobby, patterns, intersections, decorations.markings}
+\usepackage{graphicx} %inserting graphics
+\usepackage{hyperref} %hyperlinks
+\usepackage{datetime} %date and time
+\usepackage{enumerate,enumitem} %numbered lists
+\usepackage{float} %inserting floats
+\usepackage{circuitikz}[american voltages, american currents] %circuit diagrams
+\usepackage{algpseudocode} %algorithms
+\usepackage{algorithm} %algorithms
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}} %adds numbers to specific equations in non-numbered list of equations
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\let\And\relax
+\algnewcommand\And{\ \textbf{and}\ }
+\algnewcommand\False{\texttt{FALSE}}
+\algnewcommand\True{\texttt{TRUE}}
+
+\makeatletter
+\@addtoreset{section}{part} %resets section numbers in new part
+\makeatother
+
+\SetupExSheets{solution/print = true}
+
+%opening
+\title
+[
+	DS\&A : Assignment 1
+]
+{
+	Data Structures and Algorithms\\
+	Assignment 1
+}
+\author
+{
+	Aakash Jog\\
+	ID : 989323563
+}
+\date{\formatdate{8}{3}{2016}}
+
+\begin{document}
+
+\maketitle
+%\setlength{\mathindent}{0pt}
+
+\begin{question}
+	Write a pseudocode for an algorithm that receives as input an array $A$ containing $n$ different numbers sorted in ascending order, and a value $x$ such that
+	\begin{equation*}
+		A[1] \le x \le A[n]
+	\end{equation*}
+	but $x$ itself does not appear in the array $A$.
+	The algorithm prints pair $(\mathit{lb},\mathit{ub})$ such that
+	\begin{enumerate}
+		\item Both $\mathit{lb}$ and $\mathit{ub}$ are values which appear in the array $A$.
+		\item $\mathit{lb} \le x \le \mathit{ub}$
+		\item $\mathit{lb}$ is the closest value to $x$ which is less than or equal to $x$, and $\mathit{ub}$ is the closest value to $x$ which is greater than or equal to $x$.
+	\end{enumerate}
+	The running time of the algorithm should be $c_1 + c_2 \log(n)$ for some constants $c_1$ and $c_2$.
+\end{question}
+
+\begin{solution}
+	\begin{algorithm}[H]
+		\begin{algorithmic}[1]
+			\Require{Array $A$ of size $n$, $x$}
+			\Ensure{Lower bound $\mathit{lb}$ of $x$, upper bound $\mathit{ub}$ of $x$}
+			\Statex
+			\Function{Find Bounds}{$A$, $x$}
+				\State{$\mathit{lb} \gets $\Call{Find Lower Bound}{$A$, $x$}}
+				\State{$\mathit{ub} \gets $\Call{Find Upper Bound}{$A$, $x$}}
+				\State{\Return{$(\mathit{lb},\mathit{ub})$}}
+			\EndFunction
+			\Statex
+			\Function{Find Lower Bound}{$A$, $x$}
+				\State{$\texttt{min} \gets 1$}
+				\State{$\texttt{max} \gets n$}
+				\State{$\texttt{found} = \False$}
+				\While{$\texttt{found} = \False$}
+					\State{$\texttt{mid} \gets \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+					\If{$A[\texttt{mid} - 1] < x \And A[\texttt{mid}] > x$}
+						\State{$\mathit{lb} \gets A[\texttt{mid} - 1]$}
+						\State{$\texttt{found} \gets \True$}
+					\ElsIf{$A[\texttt{mid} - 1] < x$}
+						\State{$\texttt{max} \gets \texttt{mid}$}
+					\Else
+						\State{$\texttt{min} \gets \texttt{mid}$}
+					\EndIf
+				\EndWhile
+				\State{\Return{$\mathit{lb}$}}
+			\EndFunction
+			\Statex
+			\Function{Find Upper Bound}{$A$, $x$}
+				\State{$\texttt{min} \gets 1$}
+				\State{$\texttt{max} \gets n$}
+				\State{$\texttt{found} = \False$}
+					\State{$\texttt{mid} \gets \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+				\While{$\texttt{found} = \False$}
+					\If{$A[\texttt{mid} - 1] < x \And A[\texttt{mid}] > x$}
+						\State{$\mathit{ub} \gets A[\texttt{mid}]$}
+						\State{$\texttt{found} \gets \True$}
+					\ElsIf{$A[\texttt{mid} - 1] > x$}
+						\State{$\texttt{max} \gets \texttt{mid}$}
+					\Else
+						\State{$\texttt{min} \gets \texttt{mid}$}
+					\EndIf
+				\EndWhile
+				\State{\Return{$\mathit{ub}$}}
+			\EndFunction
+		\end{algorithmic}
+		\caption{}
+	\end{algorithm}
+\end{solution}
+
+\begin{question}
+	Let $A$ be an array that contains $n$ numbers and assume that the values stored in array $A$ are not necessarily different from each other, but still sorted in ascending order.
+	Let $x$ be a number.\\
+	Write a pseudocode for a procedure whose running time is at most $c_1 + c_2 \log(n)$ for some constants $c_1$ and $c_2$, such that
+	\begin{enumerate}
+		\item If the number $x$ does not appear in array $A$, the procedure returns \texttt{NOT-FOUND}.
+		\item If the number $x$ does appear in array $A$, the procedure returns the index $j$ of the first occurrence of $x$.
+	\end{enumerate}
+	The procedure can call the \textsc{Binary Search} procedure.
+	Give a short explanation.
+\end{question}
+
+\begin{solution}
+	\begin{algorithm}
+		\begin{algorithmic}[1]
+			\Require{Array $A$ of size $n$, $x$}
+			\Ensure{Index $j$ of first occurrence of $x$}
+			\Statex
+			\Function{First Occurrence}{$A$, $x$}
+				\State{$\texttt{index\_of\_any\_occurrence} \gets$ \Call{Binary Search}{$n$, $A$, $x$}}
+				\If{$\texttt{index\_of\_any\_occurrence} = \texttt{NOT-FOUND}$}
+					\State{\Return{\texttt{NOT-FOUND}}}
+				\EndIf
+				\State{$\texttt{min} \gets 1$}
+				\State{$\texttt{max} \gets \texttt{index\_of\_any\_occurrence}$}
+				\While{$\texttt{min} < \texttt{max}$}
+					\State{$\texttt{mid} \gets \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+					\If{$A[\texttt{mid}] < x$}
+						\State{$\texttt{min} \gets \texttt{mid} + 1$}
+					\Else
+						\State{$\texttt{max} \gets \texttt{mid} + 1$}
+					\EndIf
+				\EndWhile
+				\State{\Return{$\texttt{min}$}}
+			\EndFunction
+		\end{algorithmic}
+		\caption{}
+	\end{algorithm}
+	The function calls \textsc{Binary Search} to find any occurrence of the required number $x$, and stores this value in \texttt{index\_of\_any\_occurrence}.
+	It then takes into consideration the sub-array to the left of this position, including the position itself.
+	It `halves' the sub-array, and takes into consideration either the left or the right half depending on whether the central element is $x$ or not.
+	It repeats this process, repeatedly `halving' the array, till the length of the sub-array is $1$.
+	At this point the only remaining element in the array is the first occurrence of $x$.
+	It returns this index.
+\end{solution}
+
+\begin{question}
+	Let $A$ be an array that contains $n$ numbers.
+	The array $A$ is called unimodal if there exists an index $s(A)$, such that
+	\begin{itemize}
+		\item $1 \le s(A) \le n$.
+		\item $A[i] < A[i + 1]$ for each $1 \le i \le s(A)$.
+		\item $A[i + 1] < A[i]$ for each $s(A) \le i \le n$.
+	\end{itemize}
+	\begin{enumerate}
+		\item
+			What does the value $A[s(A)]$ hold in comparison to the other values of $A$?
+			Explain shortly.
+		\item
+			Write a pseudocode for a procedure that receives as inputs an unimodal array $A$ and its size $n$.
+			The procedure returns $s(A)$.\\
+			The running time of the procedure should be at most $c_1 + c_2 \log(n)$ for some constants $c_1$ and $c_2$.
+			Provide a short explanation of the idea behind the procedure and explain why the running time is the requested one.
+	\end{enumerate}
+\end{question}
+
+\begin{solution}
+	\begin{enumerate}[leftmargin=*]
+		\item
+			All elements before and including $s(A)$ are in ascending order.
+			All elements after and including $s(A)$ are in descending order.
+			Therefore, $A[s(A)]$ is the greatest value in the array.
+		\item
+			~\\
+			\begin{algorithm}[H]
+				\begin{algorithmic}[1]
+					\Require{Array $A$ of size $n$}
+					\Ensure{Index $s(A)$ of the mode of $A$}
+					\Statex
+					\Function{Find Mode}{$A$}
+						\State{$\texttt{min} \gets 1$}
+						\State{$\texttt{max} \gets n$}
+						\State{$\texttt{found} = \False$}
+						\While{$\texttt{found} = \False$}
+							\State{$\texttt{mid} \gets \left\lfloor \frac{\texttt{min} + \texttt{max}}{2} \right\rfloor$}
+							\If{$\texttt{mid} = 1$}
+								\If{$A[\texttt{mid}] > A[\texttt{mid} + 1]$}
+									\State{$\texttt{mode} = \texttt{mid}$}
+									\State{$\texttt{found} \gets \True$}
+								\EndIf
+							\ElsIf{$\texttt{mid} = n$}
+								\If{$A[\texttt{mid} - 1] < A[\texttt{mid}]$}
+									\State{$\texttt{mode} = \texttt{mid}$}
+									\State{$\texttt{found} \gets \True$}
+								\EndIf
+							\Else
+								\If{$A[\texttt{mid} - 1] < A[\texttt{mid}] > A[\texttt{mid} + 1]$}
+									\State{$\texttt{mode} = \texttt{mid}$}
+									\State{$\texttt{found} \gets \True$}
+								\ElsIf{$A[\texttt{mid} - 1] \le A[\texttt{mid}] \le A[\texttt{mid} + 1]$}
+									\State{$\texttt{min} \gets \texttt{mid}$}
+								\Else
+									\State{$\texttt{max} \gets \texttt{mid}$}
+								\EndIf
+							\EndIf
+						\EndWhile
+						\State{\Return{\texttt{mode}}}
+					\EndFunction
+				\end{algorithmic}
+				\caption{}
+			\end{algorithm}
+			On each execution of the while loop, the algorithm `halves' the array.
+			Therefore, the running time is $c_1 + c_2 \log(n)$.
+	\end{enumerate}
+\end{solution}
+
+\end{document}
