@@ -1,0 +1,240 @@
+\documentclass[fleqn, a4paper, 11pt, oneside]{amsart}
+\usepackage{exsheets}
+\usepackage{amsmath, amssymb, amsthm} %standard AMS packages
+\usepackage{marginnote} %marginnotes
+\usepackage{gensymb} %miscellaneous symbols
+\usepackage{commath} %differential symbols
+\usepackage{xcolor} %colours
+\usepackage{cancel} %cancelling terms
+\usepackage[free-standing-units, space-before-unit]{siunitx} %formatting units
+\usepackage{tikz, pgfplots} %diagrams
+	\usetikzlibrary{calc, hobby, patterns, intersections, decorations.markings}
+\usepackage{graphicx} %inserting graphics
+\usepackage{hyperref} %hyperlinks
+\usepackage{datetime} %date and time
+\usepackage{enumerate,enumitem} %numbered lists
+\usepackage{float} %inserting floats
+\usepackage{circuitikz}[american voltages, american currents] %circuit diagrams
+\usepackage{algpseudocode} %algorithms
+\usepackage{algorithm} %algorithms
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}} %adds numbers to specific equations in non-numbered list of equations
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\let\And\relax
+\algnewcommand\And{\ \textbf{and}\ }
+\algnewcommand\False{\texttt{FALSE}}
+\algnewcommand\True{\texttt{TRUE}}
+
+\makeatletter
+\@addtoreset{section}{part} %resets section numbers in new part
+\makeatother
+
+\SetupExSheets{solution/print = true}
+
+%opening
+\title
+[
+	DS\&A : Assignment 2
+]
+{
+	Data Structures and Algorithms\\
+	Assignment 2
+}
+\author
+{
+	Aakash Jog\\
+	ID : 989323563
+}
+\date{\formatdate{29}{3}{2016}}
+
+\begin{document}
+
+\maketitle
+%\setlength{\mathindent}{0pt}
+
+\begin{question}
+	The following is a pseudocode of the Bubble Sort Algorithm.
+	\begin{algorithm}
+		\begin{algorithmic}[1]
+			\Require{$A[1:n]$, $n$}
+			\Statex
+			\Procedure{Bubble Sort}{$A[1:n]$, $n$}
+				\For{$i = n - 1$ to $1$}
+					\For{$j = 1$ to $i$}
+						\If{$A[j] > A[j + 1]$}
+							\State{\Call{Swap}{$A$, $j$, $j + 1$}>}
+						\EndIf
+					\EndFor
+				\EndFor
+			\EndProcedure
+			\Statex
+			\Procedure{Swap}{$A$, $j$, $k$}
+				\State{$\texttt{x} \gets A[j]$}
+				\State{$A[j] \gets A[k]$}
+				\State{$A[k] \gets \texttt{x}$}
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	\begin{enumerate}
+		\item Which property does the array hold at the end of the $i$th iteration of the for loop?
+		\item What is the algorithm's running time?
+	\end{enumerate}
+\end{question}
+
+\begin{solution}
+	\begin{enumerate}[leftmargin=*]
+		\item
+			At the end of the $i$th iteration of the second for loop, the sub array $A[1:i]$ is sorted in ascending order.
+		\item
+			As the algorithm has one for loop inside another, with each of the iterable changing in a linear manner, the running time of the algorithm is $\mathrm{O}\left( n^2 \right)$.
+	\end{enumerate}
+\end{solution}
+
+\begin{question}
+	We've seen in class that the running time of Insertion Sort on different inputs is different.
+	In particular, when the array is sorted in descending order (from the largest to the smallest) the running time is quadratic, while when the array is sorted in increasing order (from the smallest to the largest) the running time is linear.
+	In this question, we try to understand more generally, how the running time for different inputs is dependent on ``how much they are not sorted''.\\
+	Given an array $A$ of length $n$.
+	Let the running time of Insertion Sort of $A$ be denoted by $T_{\text{IS}}(A)$.
+	For each index $1 \le j \le n$, let the number of elements in $A$ whose value is larger than $A[j]$ but appear before $A[j]$ be denoted by $v_A(j)$.
+	\begin{enumerate}
+		\item
+			Give an example of an array $A$ of length $n = 5$ that is sorted in ascending order.
+			For each index $1 \le j \le 5$, what is the value of $v_A(j)$?
+		\item
+			Give an example of an array $A$ of length $n = 5$ that is sorted in descending order.
+			For each index $1 \le j \le 5$, what is the value of $v_A(j)$?
+		\item
+			What is the relation between $v_A(j)$ and the number of iterations of the while loop on array $A$ in the $j$th iteration of the for loop?
+		\item
+			What is $T_{\text{IS}}(A)$ in terms of $\mathrm{\Theta}$ as a function of $v_A(1),\dots,v_A(n)$?
+			Explain your answer.
+	\end{enumerate}
+\end{question}
+
+\begin{solution}
+	\begin{enumerate}[leftmargin=*]
+		\item
+			\begin{align*}
+				A & = \left[ 1,2,3,4,5 \right]
+			\end{align*}
+			Therefore,
+			\begin{align*}
+				v_A(1) & = 0 \\
+				v_A(2) & = 0 \\
+				v_A(3) & = 0 \\
+				v_A(4) & = 0 \\
+				v_A(5) & = 0
+			\end{align*}
+		\item
+			\begin{align*}
+				A & = \left[ 5,4,3,2,1 \right]
+			\end{align*}
+			Therefore,
+			\begin{align*}
+				v_A(1) & = 0 \\
+				v_A(2) & = 1 \\
+				v_A(3) & = 2 \\
+				v_A(4) & = 3 \\
+				v_A(5) & = 4
+			\end{align*}
+		\item
+			$v_A(j)$ is equal to the number of iterations of the while loop in the $j$th iteration of the for loop.
+			This is because $v_A(j)$ represents the number of elements of $A$ to the left of $A[j]$ which need to be moved to the right of $A[j]$.
+		\item
+			$v_A(j)$ is equal to the number of iterations of the while loop in the $j$th iteration of the for loop.
+			Therefore, the number of operations in the $j$th iteration of th for loop is $c_1 + c_2 v_A(j)$.
+			Therefore, the total running time is
+			\begin{align*}
+				T_{\text{IS}}(A) & = \sum\limits_{j = 2}^{n} c_1 + c_2 v_A(j)
+			\end{align*}
+			where each $v_A(j)$ is dependent on $n$ and the original sorting of the array.
+	\end{enumerate}
+\end{solution}
+
+\begin{question}
+	Consider the following algorithm.
+	\begin{algorithm}
+		\begin{algorithmic}[1]
+			\Procedure{Alg}{$n$}
+				\State{\Call{Proc1}{$n$}}
+				\State{\Call{Proc2}{$n$}}
+				\State{\Call{Proc3}{$n$}}
+			\EndProcedure
+		\end{algorithmic}
+	\end{algorithm}
+	Let the running time of the three procedures \textsc{Proc1}, \textsc{Proc2}, and \textsc{Proc3} be $T_1(n)$, $T_2(n)$, and $T_3(n)$ respectively.
+	Let the running time of the entire algorithm be $T_A(n)$.\\
+	Let
+	\begin{align*}
+		T_1(n) & = \mathrm{\Omega}\left( n \log(n)^3 \right) \\
+		T_2(n) & = \mathrm{O}\left( n^2 \right)              \\
+		T_3(n) & = \mathrm{\Theta}\left( n^{0.5} \right)
+	\end{align*}
+	Which of the following bounds are necessarily true, which are necessarily not true, and which are not necessarily true?
+	Explain your answer.
+	\begin{enumerate}
+		\item $T_A(n) = \mathrm{\Omega}\left( n^{0.5} \right)$
+		\item $T_A(n) = \mathrm{\Omega}\left( n^2 \right)$
+		\item $T_A(n) = \mathrm{O}(n)$
+	\end{enumerate}
+\end{question}
+
+\begin{solution}
+	\begin{enumerate}[leftmargin=*]
+		\item
+			In the asymptotic case, i.e. for $n \to \infty$,
+			\begin{equation*}
+				n^{0.5} < n \log(n)^3 < n^2
+			\end{equation*}
+			Also,
+			\begin{align*}
+				T_2(n) & = \mathrm{O}\left( n^2 \right)
+			\end{align*}
+			Therefore,
+			\begin{align*}
+				T_A(n) & = \mathrm{\Omega}\left( n^{0.5} \right)
+			\end{align*}
+			is necessarily true.
+		\item
+			In the asymptotic case, i.e. for $n \to \infty$,
+			\begin{equation*}
+				n^{0.5} < n \log(n)^3 < n^2
+			\end{equation*}
+			Also,
+			\begin{align*}
+				T_2(n) & = \mathrm{O}\left( n^2 \right)
+			\end{align*}
+			Therefore,
+			\begin{align*}
+				T_A(n) & = \mathrm{\Omega}\left( n^2 \right)
+			\end{align*}
+			is not necessarily true.
+		\item
+			In the asymptotic case, i.e. for $n \to \infty$,
+			\begin{equation*}
+				n^{0.5} < n \log(n)^3 < n^2
+			\end{equation*}
+			Also,
+			\begin{align*}
+				T_1(n) & = \mathrm{\Omega}\left( n \log(n)^3 \right)
+			\end{align*}
+			Therefore,
+			\begin{align*}
+				T_A(n) & = \mathrm{O}(n)
+			\end{align*}
+			is necessarily not true.
+	\end{enumerate}
+\end{solution}
+
+\end{document}
